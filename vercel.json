@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "name": "project-invent-ai-reviewer",
+  "builds": [
+    { "src": "api/**/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/health", "dest": "/api/health.js" },
+    { "src": "/api/evaluate", "dest": "/api/evaluate.js" }
+  ]
+}

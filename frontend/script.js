@@ -5,8 +5,8 @@ const metaEl = document.getElementById("meta");
 const resultEl = document.getElementById("result");
 
 const endpoint = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
-  ? "/api/evaluate.json"
-  : "https://codeday-labs.github.io/project-invent-ai-reviewer/api/evaluate.json";
+  ? "http://127.0.0.1:8000/api/evaluate.json"
+  : "https://project-invent-ai-reviewer.vercel.app/api/evaluate";
 
 async function readFile(file) {
   if (!file) {
