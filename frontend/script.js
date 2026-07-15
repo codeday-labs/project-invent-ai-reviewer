@@ -4,9 +4,10 @@ const statusEl = document.getElementById("status");
 const metaEl = document.getElementById("meta");
 const resultEl = document.getElementById("result");
 
+const fallbackEndpoint = "https://project-invent-ai-reviewer.vercel.app/api/evaluate";
 const endpoint = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
   ? "http://127.0.0.1:8000/api/evaluate.json"
-  : "https://project-invent-ai-reviewer.vercel.app/api/evaluate";
+  : (window.API_BASE_URL || fallbackEndpoint);
 
 async function readFile(file) {
   if (!file) {
