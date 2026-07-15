@@ -1,0 +1,17 @@
+{
+  "status": "ok",
+  "mock": true,
+  "fileName": "sample-upload.txt",
+  "review": {
+    "summary": "Mock review: the document looks structurally sound and ready for a first pass.",
+    "score": 82,
+    "highlights": [
+      "The upload was received successfully.",
+      "The content starts with a clear opening paragraph."
+    ],
+    "nextSteps": [
+      "Add clearer section headings.",
+      "Check spelling and formatting."
+    ]
+  }
+}
