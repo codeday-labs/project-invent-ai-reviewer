@@ -8,27 +8,15 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parent
 
 
+def load_json(path):
+    with open(path, "r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
 def build_mock_response(payload):
-    file_name = payload.get("fileName", "unknown")
-    content = payload.get("content", "")
-    preview = content.strip().splitlines()[0] if content.strip() else ""
-    return {
-        "status": "ok",
-        "mock": True,
-        "fileName": file_name,
-        "review": {
-            "summary": "Mock review: the document looks structurally sound and ready for a first pass.",
-            "score": 82,
-            "highlights": [
-                "The upload was received successfully.",
-                f"Preview: {preview[:120] or 'No preview available.'}",
-            ],
-            "nextSteps": [
-                "Add clearer section headings.",
-                "Check spelling and formatting.",
-            ],
-        },
-    }
+    response = load_json(ROOT / "api" / "evaluate.json")
+    response["fileName"] = payload.get("fileName", response.get("fileName", "unknown"))
+    return response
 
 
 def try_openai_review(payload):
@@ -39,8 +27,8 @@ def try_openai_review(payload):
     file_name = payload.get("fileName", "unknown")
     content = payload.get("content", "")
     prompt = (
-        "You are a helpful reviewer. Review the following document and return a concise JSON object "
-        "with keys: summary, score, highlights, nextSteps."
+        "You are a helpful reviewer. Review the following document and return concise JSON containing "
+        "summary, score, highlights, and nextSteps."
         f"\nDocument name: {file_name}\nContent:\n{content[:4000]}"
     )
 
@@ -87,12 +75,13 @@ def build_response(payload):
 class ReviewHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed = urlparse(self.path)
-        if parsed.path == "/api/review":
-            self.send_json(build_response({"fileName": "local-upload.txt", "content": ""}))
+
+        if parsed.path == "/api/health.json":
+            self.send_json(load_json(ROOT / "api" / "health.json"))
             return
 
-        if parsed.path == "/api/review.json":
-            self.send_file(ROOT / "api" / "review.json")
+        if parsed.path == "/api/evaluate.json":
+            self.send_json(build_response({"fileName": "sample-upload.txt", "content": ""}))
             return
 
         file_path = (ROOT / parsed.path.lstrip("/")).resolve()
@@ -101,21 +90,10 @@ class ReviewHandler(BaseHTTPRequestHandler):
             return
 
         if parsed.path in {"/", "/index.html"}:
-            self.send_file(ROOT / "index.html")
+            self.send_file(ROOT / "frontend" / "index.html")
             return
 
         self.send_error(404)
-
-    def do_POST(self):
-        parsed = urlparse(self.path)
-        if parsed.path != "/api/review":
-            self.send_error(404)
-            return
-
-        length = int(self.headers.get("Content-Length", "0"))
-        body = self.rfile.read(length).decode("utf-8") if length else "{}"
-        payload = json.loads(body or "{}")
-        self.send_json(build_response(payload))
 
     def send_json(self, payload):
         body = json.dumps(payload).encode("utf-8")

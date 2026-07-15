@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Invent AI Reviewer</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="card">
+      <h1>Project Invent AI Reviewer</h1>
+      <p>Upload a document and evaluate it with the mock review flow.</p>
+
+      <div class="controls">
+        <input id="fileInput" type="file" />
+        <button id="evaluateButton" type="button">Evaluate</button>
+      </div>
+
+      <div class="status" id="status">Choose a file to begin.</div>
+      <div class="meta" id="meta"></div>
+      <pre id="result">No evaluation yet.</pre>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
